@@ -16,18 +16,17 @@
     <%= for log <- @logs do %>
       <tr>
         <td scope="row"> <%= log.id %> </td>
-        <td> <%= log.payload %> </td>
+        <td> <pre class="json_payload"> <%= Jason.Formatter.pretty_print(log.payload) %> </pre> </td>
         <td><%= log.inserted_at %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
 
-  <div class="row">
-    <div class="col-3 mx-auto">
-        <div class="text-center">
-          <%= if (@logs.total_pages > 1), do: pagination_links @logs %>
-        </div>
-    </div>
+<div class="row">
+  <div class="col-3 mx-auto">
+      <div class="text-center">
+        <%= if (@logs.total_pages > 1), do: pagination_links @logs %>
+      </div>
   </div>
 </div>
