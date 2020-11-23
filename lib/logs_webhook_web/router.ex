@@ -48,8 +48,8 @@ defmodule LogsWebhookWeb.Router do
   end
 
   defp auth(conn, _opts) do
-    username = "admin" || System.fetch_env!("AUTH_USERNAME")
-    password = "password" || System.fetch_env!("AUTH_PASSWORD")
+    username = System.fetch_env!("AUTH_USERNAME")
+    password = System.fetch_env!("AUTH_PASSWORD")
     Plug.BasicAuth.basic_auth(conn, username: username, password: password)
   end
 end
