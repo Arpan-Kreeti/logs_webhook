@@ -4,8 +4,8 @@ defmodule LogsWebhookWeb.LogsController do
 
   action_fallback LogsWebhookWeb.FallbackController
 
-  def create(conn, payload) do
-    with {:ok, _} <- Logs.create_log(payload) do
+  def create(conn, params) do
+    with {:ok, _} <- Logs.create_log(%{payload: Jason.encode!(params)}) do
       conn
       |> Plug.Conn.put_status(200)
       |> json(%{})
