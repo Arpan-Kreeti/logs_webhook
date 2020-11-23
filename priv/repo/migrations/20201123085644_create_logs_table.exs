@@ -3,7 +3,7 @@ defmodule LogsWebhook.Repo.Migrations.CreateLogsTable do
 
   def change do
     create table(:logs) do
-      add :payload, :string, null: false
+      add :payload, :text, null: false
 
       timestamps()
     end
