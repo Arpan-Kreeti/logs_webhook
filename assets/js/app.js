@@ -17,6 +17,8 @@ import "phoenix_html"
 import { Socket } from "phoenix"
 import NProgress from "nprogress"
 import { LiveSocket } from "phoenix_live_view"
+import "../node_modules/daterangepicker/moment.min.js"
+import "../node_modules/daterangepicker/daterangepicker.js"
 
 import $ from 'jquery'
 window.jQuery = $
@@ -46,16 +48,33 @@ library.json = {
 };
 
 
+let beautify_json_payloads = () => {
+  $(".json_payload").each(function () {
+    try {
+      let pretty_json = library.json.prettyPrint(JSON.parse($(this).html()));
+      $(this).html($.parseHTML(pretty_json));
+    } catch (e) {
+      // Ignore error
+    }
+  });
+};
+
+// Create a hook such that whenever a new log comes in it will be formatted
 let Hooks = {}
 Hooks.JsonBeautify = {
   mounted() {
-    $(".json_payload").each(function () {
-        try {
-          let pretty_json = library.json.prettyPrint(JSON.parse($(this).html()));
-          $(this).html($.parseHTML(pretty_json));
-        } catch(e) {
-            // Ignore error
-        }
+    beautify_json_payloads()
+  },
+  updated() {
+    beautify_json_payloads()
+  }
+};
+
+
+Hooks.updateDateTimeRange = {
+  mounted() {
+    $('.daterange').on('hide.daterangepicker', (ev, picker) => {
+      this.pushEvent("search", { date_range: $('.daterange').val() })
     });
   }
 }
@@ -75,3 +94,14 @@ liveSocket.connect()
 // >> liveSocket.enableLatencySim(1000)  // enabled for duration of browser session
 // >> liveSocket.disableLatencySim()
 window.liveSocket = liveSocket
+
+// Attach a date range picker to the date range input
+$(function () {
+  $('.daterange').daterangepicker({
+    "timePicker": true,
+    "timePicker24Hour": true,
+    "locale": {
+      "format": 'YYYY-MM-DD hh:mm:00'
+    }
+  });
+});

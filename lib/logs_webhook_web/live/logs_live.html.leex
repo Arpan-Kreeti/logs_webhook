@@ -1,31 +1,48 @@
-<div class="row mt-3">
+<div class="row p-4 mt-2 border border-primary rounded bg-secondary text-white">
+  <div class="col-1.5">
+    <span class="h3"> Search </span>
+  </div>
   <div class="col-8">
-    <h3>Logs</h3>
-
     <form phx-change="search">
-      <div class="input-group">
-        <input class="form-control" type="text" name="query" placeholder="Search" aria-label="Search" phx-debounce="1500">
-        <div class="input-group-append">
-          <span class="input-group-text">
-            <i class="fa fa-search" aria-hidden="true"></i>
-          </span>
+      <div class="form-row">
+        <div class="col">
+          <div class="input-group">
+            <div class="input-group-append">
+              <span class="input-group-text">
+                <i class="fa fa-search" aria-hidden="true"></i>
+              </span>
+            </div>
+            <input class="form-control" type="text" name="query" placeholder="Search" aria-label="Search" phx-debounce="1500" value="<%= @params["query"] %>">
+          </div>
         </div>
-      </div>
+
+        <div class="col">
+          <div class="input-group">
+            <div class="input-group-append">
+              <span class="input-group-text">
+                <i class="fa fa-calendar" aria-hidden="true"></i>
+              </span>
+            </div>
+            <input class="form-control daterange" type="text" name="date_range" placeholder="Select date range" autocomplete="off" phx-hook="updateDateTimeRange" id="daterangepicker" value="<%= @params["date_range"] %>"/>
+            </div>
+          </div>
+        </div>
     </form>
   </div>
 </div>
+
 
 <div class="row mt-3">
   <div class="col-8">
     <span class="font-weight-bold badge badge-pill badge-success"> Total Logs found: <%= @logs.total_entries %> </span>
   </div>
 </div>
-<table class="table table-hover my-2">
+<table class="table table-hover my-2 border border-secondary">
   <thead class="thead-dark">
     <tr>
       <th scope="col">ID</th>
-      <th scope="col">Payload</th>
-      <th scope="col">DateTime</th>
+      <th scope="col" class="text-center">Payload</th>
+      <th scope="col" class="text-center">DateTime</th>
     </tr>
   </thead>
 
@@ -34,7 +51,7 @@
       <tr>
         <td scope="row"> <%= log.id %> </td>
         <td phx-hook="JsonBeautify" id="log_payload_<%= log.id %>"> <pre class="json_payload"> <%= Jason.Formatter.pretty_print(log.payload) %> </pre> </td>
-        <td><%= log.inserted_at %></td>
+        <td class="text-center"><%= log.inserted_at %></td>
       </tr>
     <% end %>
   </tbody>
@@ -48,4 +65,4 @@
   </div>
 </div>
 
- <%= live_component(@socket, LogsWebhookWeb.ToastLive, id: "toast", toast: false) %>
+<%= live_component(@socket, LogsWebhookWeb.ToastLive, id: "toast", toast: false) %>

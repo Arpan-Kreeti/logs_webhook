@@ -4,7 +4,7 @@ defmodule LogsWebhookWeb.LogsLive do
   alias LogsWebhook.Logs
   alias LogsWebhookWeb.ToastLive
   @live_logs_topic "live_logs_topic"
-  @toast_duration 1500
+  @toast_duration 2000
 
   @impl true
   def mount(params, _session, socket) do

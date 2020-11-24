@@ -23,7 +23,14 @@ defmodule LogsWebhook.Logs do
 
   def search_query(query, _search_query), do: query
 
-  def filter_date(query, %{"from" => start_date, "to" => end_date}) do
+  def filter_date(query, %{"date_range" => ""}), do: query
+
+  def filter_date(query, %{"date_range" => date_range}) do
+    [start_date, end_date] = String.split(date_range, " - ")
+
+    start_date = NaiveDateTime.from_iso8601!(start_date)
+    end_date = NaiveDateTime.from_iso8601!(end_date)
+
     from log in query,
       where: log.inserted_at >= ^start_date and log.inserted_at <= ^end_date
   end
