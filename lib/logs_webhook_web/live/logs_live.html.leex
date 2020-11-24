@@ -1,6 +1,23 @@
 <div class="row mt-3">
   <div class="col-8">
     <h3>Logs</h3>
+
+    <form phx-change="search">
+      <div class="input-group">
+        <input class="form-control" type="text" name="query" placeholder="Search" aria-label="Search" phx-debounce="1500">
+        <div class="input-group-append">
+          <span class="input-group-text">
+            <i class="fa fa-search" aria-hidden="true"></i>
+          </span>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="row mt-3">
+  <div class="col-8">
+    <span class="font-weight-bold badge badge-pill badge-success"> Total Logs found: <%= @logs.total_entries %> </span>
   </div>
 </div>
 <table class="table table-hover my-2">
