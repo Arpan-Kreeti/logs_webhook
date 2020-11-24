@@ -14,14 +14,54 @@ import "../css/app.scss"
 //     import socket from "./socket"
 //
 import "phoenix_html"
-import {Socket} from "phoenix"
+import { Socket } from "phoenix"
 import NProgress from "nprogress"
-import {LiveSocket} from "phoenix_live_view"
-import "./custom.js"
+import { LiveSocket } from "phoenix_live_view"
 
+import $ from 'jquery'
+window.jQuery = $
+window.$ = $
+
+var library = {};
+
+library.json = {
+  replacer: function (match, pIndent, pKey, pVal, pEnd) {
+    var key = '<span class=json-key>';
+    var val = '<span class=json-value>';
+    var str = '<span class=json-string>';
+    var r = pIndent || '';
+    if (pKey)
+      r = r + key + pKey.replace(/[": ]/g, '') + '</span>: ';
+    if (pVal)
+      r = r + (pVal[0] == '"' ? str : val) + pVal + '</span>';
+    return r + (pEnd || '');
+  },
+  prettyPrint: function (obj) {
+    var jsonLine = /^( *)("[\w]+": )?("[^"]*"|[\w.+-]*)?([,[{])?$/mg;
+    return JSON.stringify(obj, null, 3)
+      .replace(/&/g, '&amp;').replace(/\\"/g, '&quot;')
+      .replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(jsonLine, library.json.replacer);
+  }
+};
+
+
+let Hooks = {}
+Hooks.JsonBeautify = {
+  mounted() {
+    $(".json_payload").each(function () {
+        try {
+          let pretty_json = library.json.prettyPrint(JSON.parse($(this).html()));
+          $(this).html($.parseHTML(pretty_json));
+        } catch(e) {
+            // Ignore error
+        }
+    });
+  }
+}
 
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
-let liveSocket = new LiveSocket("/live", Socket, {params: {_csrf_token: csrfToken}})
+let liveSocket = new LiveSocket("/live", Socket, { params: { _csrf_token: csrfToken }, hooks: Hooks })
 
 // Show progress bar on live navigation and form submits
 window.addEventListener("phx:page-loading-start", info => NProgress.start())

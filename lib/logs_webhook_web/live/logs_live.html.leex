@@ -33,7 +33,7 @@
     <%= for log <- @logs do %>
       <tr>
         <td scope="row"> <%= log.id %> </td>
-        <td> <pre class="json_payload"> <%= Jason.Formatter.pretty_print(log.payload) %> </pre> </td>
+        <td phx-hook="JsonBeautify" id="log_payload_<%= log.id %>"> <pre class="json_payload"> <%= Jason.Formatter.pretty_print(log.payload) %> </pre> </td>
         <td><%= log.inserted_at %></td>
       </tr>
     <% end %>
